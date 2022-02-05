@@ -144,40 +144,76 @@ def play_game(grid):
             print("Final Grid")
             printGrid(grid)
             break
-
-
-def recursive_backtrack_solver(grid, no_of_recursion):
-    no_of_recursion += 1
+class count:
+    num_of_recursion = 0
+n = count()
+def recursive_backtrack_solver(grid):
+    r = 0; c = 0;
+    n.num_of_recursion += 1;
+  
+    for i in range(0,len(grid)):
+        for j in range(0,len(grid[0])):
+            if grid[i][j] == 0:
+                r = i
+                c = j
+                break
+            
     if solved(grid):
         print("\nSolved Grid\n")
         printGrid(grid)
-        print(f"\n Number of recursions : {no_of_recursion}")
-    for i in range(0, len(grid)):
-        for j in range(0, len(grid[0])):
-            if grid[i][j] == 0:  # loop through each of the cells
-                for n in range(1, 10):
-                    if valid_move(grid, i, j, n):  # check the invalid condition of sudoku
-                        grid[i][j] = n
-                        # recursive call
-                        if recursive_backtrack_solver(grid, no_of_recursion):
-                            return True  # base case
-                        else:
-                            grid[i][j] = 0
-                return False
-    return True  # base case
+        print(f"\n Number of recursions : {n.num_of_recursion}")
+        n.num_of_recursion = 0;
+        return True
+    for i in range(10):
+        if(valid_move(grid, r, c, i)):
+            grid[r][c] = i
+            if recursive_backtrack_solver(grid):
+                return True
+            else:
+                grid[r][c] = 0
+    return False
 
 
 def solver(grid):
     while True:
         print()
-        printGrid(grid)
+        print("Select a level of difficulty :");
+        print("1.Easy");
+        print("2.Medium");
+        print("3.Hard");
+        print("4.Expert");
         print()
-        val = input("Enter \"s\" to start solving or \"q\" to go back :")
-        if val == "s":
-            s_grid = copy.deepcopy(grid)
-            output = recursive_backtrack_solver(s_grid, 0)
-            if output:
-                break
+        val = input("Select a difficulty or \"q\" to go back :")
+        if valid_num(val):
+            flag = 0;
+            if int(val) == 1:
+                s_grid = copy.deepcopy(grid[0])
+               
+            elif int(val) == 2:
+                s_grid = copy.deepcopy(grid[1])
+                
+            elif int(val) == 3:
+                s_grid = copy.deepcopy(grid[2])
+               
+            elif int(val) == 4:
+                s_grid = copy.deepcopy(grid[3])
+               
+            else:
+                print("Invalid option");
+                flag = 1;
+            
+            if flag == 0:
+                printGrid(s_grid);
+                solve = input("Enter \"s\" to start solving or \"q\" to go back :");
+                if solve == "s":
+                    output = recursive_backtrack_solver(s_grid);
+                    if output:
+                        break;
+                elif solve == "q":
+                    break;
+                else:
+                    print("Invalid option");
+            
         elif val == "q":
             break
         else:
@@ -185,7 +221,7 @@ def solver(grid):
 
 
 def main():
-    grid = [[0, 5, 3, 2, 0, 7, 0, 0, 8],
+    easy_grid = [[0, 5, 3, 2, 0, 7, 0, 0, 8],
             [6, 0, 1, 5, 0, 0, 0, 0, 2],
             [2, 0, 0, 9, 1, 3, 0, 5, 0],
             [7, 1, 4, 6, 9, 2, 0, 0, 0],
@@ -195,6 +231,47 @@ def main():
             [1, 0, 0, 0, 0, 6, 3, 0, 4],
             [8, 0, 0, 1, 0, 9, 6, 7, 0]
             ]
+    medium_grid = [[1,2,0,6,0,0,4,0,9],
+                    [0,0,0,0,0,4,1,0,2],
+                    [0,0,6,0,1,0,5,0,0],
+                    [6,0,8,1,0,0,0,0,0],
+                    [0,5,0,3,4,2,0,0,0],
+                    [4,0,2,0,0,8,0,0,0],
+                    [8,0,7,0,0,0,3,0,5],
+                    [3,0,4,0,0,0,0,2,6],
+                    [0,0,0,4,0,0,0,0,0]
+                    ]
+    hard_grid = [[0,2,4,0,0,0,0,0,0],
+                 [8,0,5,0,6,0,0,0,0],
+                 [3,0,0,0,0,0,1,5,9],
+                 [0,7,0,0,2,0,3,0,0],
+                 [0,0,1,9,0,7,6,0,0],
+                 [0,0,2,0,4,0,0,7,0],
+                 [1,5,9,0,0,0,0,0,6],
+                 [0,0,0,0,9,0,4,0,7],
+                 [0,0,0,0,0,0,9,8,0]
+                 ]
+    expert_grid = [[7,2,0,5,0,0,0,0,0],
+                   [5,0,0,0,4,0,6,0,0],
+                   [0,8,0,1,0,0,0,0,0],
+                   [0,0,0,0,0,3,0,0,9],
+                   [0,4,3,0,0,0,0,0,0],
+                   [0,0,0,0,0,6,0,5,0],
+                   [0,0,1,6,0,0,4,0,7],
+                   [0,0,0,0,0,9,0,0,0],
+                   [0,9,0,0,0,0,0,2,0]
+                   ]
+    # expert_grid = [[0,0,0,6,0,0,7,0,0],
+    #              [0,7,0,8,0,0,6,1,0],
+    #              [0,8,0,4,7,2,0,0,0],
+    #              [0,1,0,0,0,0,5,0,0],
+    #              [0,0,5,0,0,0,4,0,0],
+    #              [0,0,6,0,0,0,0,9,0],
+    #              [0,0,0,5,4,1,0,2,0],
+    #              [0,5,4,0,0,7,0,6,0],
+    #              [0,0,8,0,0,3,0,0,0]
+    #              ]
+    level = [copy.deepcopy(easy_grid),copy.deepcopy(medium_grid),copy.deepcopy(hard_grid),copy.deepcopy(expert_grid)];
     while True:
         print()
         print("Welcome to Sudoku !")
@@ -203,9 +280,9 @@ def main():
         print("Quit: q")
         val = input("Enter an option :")
         if val == "p":
-            play_game(grid)
+            play_game(hard_grid)
         elif val == "s":
-            solver(grid)
+            solver(copy.deepcopy(level))
         elif val == "q":
             print("Thanks for playing")
             break
